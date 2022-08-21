@@ -3,11 +3,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace CachingApp.Cache;
 
-public class MemoryCacheStore : ICacheStore
+public class CacheStore : ICacheStore
 {
     private readonly IMemoryCache _memoryCache;
     private readonly Dictionary<string, TimeSpan> _expirationConfiguration;
-    public MemoryCacheStore(
+    public CacheStore(
         IMemoryCache memoryCache,
         Dictionary<string, TimeSpan> expirationConfiguration)
     {
@@ -29,11 +29,6 @@ public class MemoryCacheStore : ICacheStore
         }
 
         this._memoryCache.Set(key.CacheKey, item, timespan);
-    }
-
-    public void Add<TItem>(TItem item, ICacheKey<TItem> key, DateTime? absoluteExpiration = null)
-    {
-        throw new NotImplementedException();
     }
 
     public TItem Get<TItem>(ICacheKey<TItem> key) where TItem : class

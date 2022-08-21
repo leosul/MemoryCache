@@ -13,11 +13,11 @@ public static class CacheExtensions
         if (services == null) throw new ArgumentException(nameof(services));
         if (configuration == null) throw new ArgumentException(nameof(configuration));
 
-        var children = configuration.GetSection("Caching").GetChildren();
-        Dictionary<string, TimeSpan> configurationCache = children.ToDictionary(child => child.Key, child => TimeSpan.Parse(child.Value));
+        var cacheConfiguration = configuration.GetSection("Caching").GetChildren();
+        Dictionary<string, TimeSpan> configurationCache = cacheConfiguration.ToDictionary(child => child.Key, child => TimeSpan.Parse(child.Value));
 
         services.AddMemoryCache();
-        services.AddSingleton<ICacheStore>(x => new MemoryCacheStore(x.GetService<IMemoryCache>(), configurationCache));
+        services.AddSingleton<ICacheStore>(x => new CacheStore(x.GetService<IMemoryCache>(), configurationCache));
 
         return services;
     }
