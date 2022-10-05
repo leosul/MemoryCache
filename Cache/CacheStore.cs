@@ -1,4 +1,5 @@
-﻿using CachingApp.Interfaces;
+﻿using CachingApp.Extensions;
+using CachingApp.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CachingApp.Cache;
@@ -29,6 +30,21 @@ public class CacheStore : ICacheStore
         }
 
         this._memoryCache.Set(key.CacheKey, item, timespan);
+    }
+
+    public void Add<TItem>(TItem item, string cacheKey, TimeSpan? expirationTime = null)
+    {
+        TimeSpan timespan;
+        if (expirationTime.HasValue)
+        {
+            timespan = expirationTime.Value;
+        }
+        else
+        {
+            timespan = _expirationConfiguration[cacheKey];
+        }
+
+        this._memoryCache.Set(HashHandler.GetHashCodeHandler(item), item, timespan);
     }
 
     public TItem Get<TItem>(ICacheKey<TItem> key) where TItem : class
